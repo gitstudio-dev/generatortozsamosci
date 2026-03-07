@@ -2,7 +2,7 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <title>Generator Tożsamości</title>
+    <title>Generator Tożsamości PRO</title>
     <style>
         :root { --primary: #10b981; --secondary: #3b82f6; --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --accent: #fbbf24; }
         body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); padding: 20px; display: flex; flex-direction: column; align-items: center; }
@@ -22,41 +22,32 @@
         .copy-hint { font-size: 0.6rem; color: var(--primary); position: absolute; right: 10px; top: 10px; opacity: 0; }
         .item:hover .copy-hint { opacity: 1; }
 
-        .footer { 
-            margin-top: 40px; 
-            padding: 20px; 
-            width: 100%; 
-            max-width: 900px; 
-            text-align: center; 
-            border-top: 1px solid #334155;
-            font-size: 0.8rem;
-            color: #94a3b8;
-        }
+        .footer { margin-top: 40px; padding: 20px; width: 100%; max-width: 900px; text-align: center; border-top: 1px solid #334155; font-size: 0.8rem; color: #94a3b8; }
         .footer-links { margin-bottom: 10px; }
-        .footer-links a { 
-            color: var(--secondary); 
-            text-decoration: none; 
-            margin: 0 15px; 
-            transition: color 0.2s;
-            font-weight: 600;
-        }
+        .footer-links a { color: var(--secondary); text-decoration: none; margin: 0 15px; transition: color 0.2s; font-weight: 600; }
         .footer-links a:hover { color: var(--primary); text-decoration: underline; }
     </style>
 </head>
 <body>
 
 <div class="box">
-    <h2>Generator tożsamości</h2>
+    <h2>Generator tożsamości v9.0</h2>
     
     <div class="profile-section">
         <div id="g-avatar" class="avatar">👤</div>
         <div>
             <div id="g-full-name" style="font-size: 1.5rem; font-weight: 800; color: #fff;">Gotowy do pracy</div>
-            <div id="g-gender-label" style="font-size: 0.9rem; color: #94a3b8;">PESEL | GSM | KRS | NIP | REGON | IBAN</div>
+            <div id="g-gender-label" style="font-size: 0.9rem; color: #94a3b8;">PESEL | GSM | ADRES | NIP | IBAN</div>
         </div>
     </div>
 
     <div class="grid">
+        <div class="item full" onclick="copy(this)">
+            <span class="label">Adres zamieszkania</span>
+            <span id="g-address" class="val">---</span>
+            <span class="copy-hint">KOPIUJ</span>
+        </div>
+
         <div class="item full" onclick="copy(this)">
             <span class="label">Numer Telefonu - <span id="g-operator" class="tag">...</span></span>
             <span id="g-phone" class="val">---</span>
@@ -91,13 +82,16 @@
         <a href="polityka.html" target="_blank">Polityka Prywatności</a>
         <a href="rodo.html" target="_blank">RODO</a>
     </div>
-    <p>&copy; 2026 Generator Tożsamości. Wykorzystuj dane wyłącznie do celów testowych.</p>
+    <p>&copy; 2026 Generator Tożsamości. Wszystkie dane są fikcyjne i służą do testów.</p>
 </footer>
 
 <script>
     const imionaM = ["Jan", "Andrzej", "Piotr", "Krzysztof", "Stanisław", "Tomasz", "Paweł", "Józef", "Marcin", "Marek", "Michał", "Grzegorz", "Jerzy", "Tadeusz", "Adam", "Łukasz", "Zbigniew", "Ryszard", "Dariusz", "Henryk", "Mariusz", "Kazimierz", "Wojciech", "Robert", "Mateusz", "Marian", "Rafał", "Jacek", "Janusz", "Mirosław"];
     const imionaZ = ["Anna", "Maria", "Katarzyna", "Małgorzata", "Agnieszka", "Krystyna", "Barbara", "Ewa", "Elżbieta", "Zofia", "Janina", "Teresa", "Joanna", "Magdalena", "Monika", "Jadwiga", "Danuta", "Irena", "Halina", "Helena", "Beata", "Aleksandra", "Marta", "Dorota", "Marianna", "Grażyna", "Jolanta", "Stanisława", "Iwona", "Urszula"];
     const nazwiska = ["Nowak", "Kowalski", "Wiśniewski", "Wójcik", "Kowalczyk", "Kamiński", "Lewandowski", "Zieliński", "Szymański", "Woźniak", "Dąbrowski", "Kozłowski", "Jankowski", "Mazur", "Wojciechowski", "Kwiatkowski", "Krawczyk", "Kaczmarek", "Piotrowski", "Grabowski", "Zając", "Pawłowski", "Michalski", "Król", "Wieczorek", "Jabłoński", "Wróbel", "Nowakowski", "Majewski", "Olszewski"];
+    
+    const miasta = ["Warszawa", "Kraków", "Wrocław", "Łódź", "Poznań", "Gdańsk", "Szczecin", "Bydgoszcz", "Lublin", "Białystok", "Katowice", "Gdynia", "Częstochowa", "Radom", "Toruń", "Sosnowiec", "Rzeszów", "Kielce", "Gliwice", "Olsztyn"];
+    const ulice = ["Polna", "Leśna", "Słoneczna", "Krótka", "Szkolna", "Ogrodowa", "Lipowa", "Brzozowa", "Łąkowa", "Kwiatowa", "Kościelna", "Sosnowa", "Zielona", "Parkowa", "Mickiewicza", "Słowackiego", "Kopernika", "Witosa", "Piłsudskiego", "Długa"];
 
     const bankList = [
         {c: "1940", n: "Credit Agricole S.A."}, {c: "2410", n: "ZEN.COM Digital Banking"},
@@ -105,10 +99,8 @@
     ];
 
     const ops = [
-        { n: "Orange", p: ["501","502","503","504","505","506","507","508","509","452","500","510","511","512","513","514","515","516","517","518","519","572","797","798"] }, 
-        { n: "Plus", p: ["601","603","605","607","609","661","663","665","667","669","691","693","695","697","721","722","723","724","725","726","781","782","783","785","885","887"] },
-        { n: "T-Mobile", p: ["532","538","539","600","602","604","606","608","660","662","664","668","692","694","696","698","734","735","784","787","788","880","882","886","888","889"] }, 
-        { n: "Play", p: ["530","531","534","535","537","570","574","575","576","577","578","731","790","791","792","794","796","730"] }
+        { n: "Orange", p: ["501","502","503","504","505","506","507","508","509","452","500","510","511","512","513","514","515","516","517","518","519","572","797","798"] }, { n: "Plus", p: ["601","603","605","607","609","661","663","665","667","669","691","693","695","697","721","722","723","724","725","726","781","782","783","785","885","887"] },
+        { n: "T-Mobile", p: ["532","538","539","600","602","604","606","608","660","662","664","668","692","694","696","698","734","735","784","787","788","880","882","886","888","889"] }, { n: "Play", p: ["530","531","534","535","537","570","574","575","576","577","578","731","790","791","792","794","796","730"] }
     ];
 
     const bigMod97 = (s) => BigInt(s) % 97n;
@@ -119,18 +111,21 @@
         const nip = genNIP();
         const reg = genRegons();
         
-        // Losowanie imienia i nazwiska
-        let imie = isF ? imionaZ[Math.floor(Math.random() * imionaZ.length)] : imionaM[Math.floor(Math.random() * imionaM.length)];
-        let nazwisko = nazwiska[Math.floor(Math.random() * nazwiska.length)];
-        
-        // Korekta nazwisk żeńskich (ska/cka)
-        if (isF) {
-            if (nazwisko.endsWith("ski")) nazwisko = nazwisko.slice(0, -3) + "ska";
-            else if (nazwisko.endsWith("cki")) nazwisko = nazwisko.slice(0, -3) + "cka";
-        }
+        // Imię i Nazwisko
+        let imie = isF ? imionaZ[Math.floor(Math.random()*imionaZ.length)] : imionaM[Math.floor(Math.random()*imionaM.length)];
+        let nazwisko = nazwiska[Math.floor(Math.random()*nazwiska.length)];
+        if (isF && nazwisko.endsWith("ski")) nazwisko = nazwisko.slice(0, -3) + "ska";
+        if (isF && nazwisko.endsWith("cki")) nazwisko = nazwisko.slice(0, -3) + "cka";
 
+        // Adres
+        const miasto = miasta[Math.floor(Math.random()*miasta.length)];
+        const ulica = ulice[Math.floor(Math.random()*ulice.length)];
+        const nrDomu = Math.floor(Math.random()*150) + 1;
+        const kod = Math.floor(10+Math.random()*89) + "-" + Math.floor(100+Math.random()*899);
+        
         document.getElementById('g-avatar').innerText = isF ? "👩" : "👨";
         document.getElementById('g-full-name').innerText = imie + " " + nazwisko;
+        document.getElementById('g-address').innerText = kod + " " + miasto + ", ul. " + ulica + " " + nrDomu;
         
         const op = ops[Math.floor(Math.random()*ops.length)];
         document.getElementById('g-phone').innerText = "+48 " + op.p[Math.floor(Math.random()*op.p.length)] + " " + Math.floor(100+Math.random()*899) + " " + Math.floor(100+Math.random()*899);
