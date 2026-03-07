@@ -2,8 +2,7 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <title>Generator Tożsamości</title>
-    <meta name="description" content="Generator tożsamości - generuj dane bezpiecznie>
+    <title>Generator Tożsamości PRO</title>
     <style>
         :root { --primary: #10b981; --secondary: #3b82f6; --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --accent: #fbbf24; }
         body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); padding: 20px; display: flex; flex-direction: column; align-items: center; }
@@ -32,7 +31,7 @@
 <body>
 
 <div class="box">
-    <h2>Generator tożsamości</h2>
+    <h2>Generator tożsamości v9.0</h2>
     
     <div class="profile-section">
         <div id="g-avatar" class="avatar">👤</div>
@@ -103,7 +102,6 @@
         { n: "Orange", p: ["501","502","503","504","505","506","507","508","509","452","500","510","511","512","513","514","515","516","517","518","519","572","797","798"] }, { n: "Plus", p: ["601","603","605","607","609","661","663","665","667","669","691","693","695","697","721","722","723","724","725","726","781","782","783","785","885","887"] },
         { n: "T-Mobile", p: ["532","538","539","600","602","604","606","608","660","662","664","668","692","694","696","698","734","735","784","787","788","880","882","886","888","889"] }, { n: "Play", p: ["530","531","534","535","537","570","574","575","576","577","578","731","790","791","792","794","796","730"] }
     ];
-
     const bigMod97 = (s) => BigInt(s) % 97n;
 
     function generateAll() {
