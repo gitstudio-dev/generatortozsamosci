@@ -2,14 +2,32 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
+    <title>RODO - Informacje</title>
     <style>
-        body { font-family: sans-serif; line-height: 1.6; color: #334155; padding: 40px; max-width: 800px; margin: auto; }
-        h1 { color: #10b981; }
+        :root { --primary: #10b981; --secondary: #3b82f6; --bg: #0f172a; --card: #1e293b; --text: #f8fafc; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); padding: 40px 20px; line-height: 1.6; display: flex; justify-content: center; }
+        .container { background: var(--card); padding: 40px; border-radius: 24px; max-width: 800px; border: 1px solid #334155; }
+        h1 { color: var(--primary); border-bottom: 1px solid #334155; padding-bottom: 10px; font-size: 1.8rem; }
+        .info-box { background: rgba(16, 185, 129, 0.1); border-left: 4px solid var(--primary); padding: 15px; color: #cbd5e1; margin: 20px 0; }
+        p { color: #94a3b8; }
+        strong { color: var(--text); }
+        .back-btn { display: inline-block; margin-top: 30px; padding: 12px 24px; background: var(--secondary); color: white; text-decoration: none; border-radius: 12px; font-weight: bold; }
     </style>
 </head>
 <body>
-    <h1>Obowiązek informacyjny RODO</h1>
-    <p>Zgodnie z Rozporządzeniem o Ochronie Danych Osobowych (RODO), informujemy, że niniejsza strona nie jest administratorem danych osobowych realnych osób fizycznych.</p>
-    <p>Dane generowane przez narzędzie (PESEL, NIP) nie stanowią danych osobowych w rozumieniu prawnym, gdyż nie są przypisane do żyjących osób w żadnej bazie danych.</p>
+    <div class="container">
+        <h1>Informacja RODO</h1>
+        
+        <div class="info-box">
+            <strong>Brak zbierania danych osobowych:</strong> Generator nie wymaga rejestracji i nie prosi o podanie Twoich danych osobowych.
+        </div>
+
+        <p>W związku z korzystaniem z narzędzi śledzenia ruchu informujemy:</p>
+        <p><strong>1. Administrator:</strong> Właściciel serwisu [Twoja Nazwa/Email].</p>
+        <p><strong>2. Przetwarzanie:</strong> Twoje dane (adres IP, lokalizacja przybliżona) są przetwarzane w sposób zanonimizowany przez zewnętrznych dostawców usług analitycznych (np. Google LLC).</p>
+        <p><strong>3. Cel:</strong> Statystyki odwiedzin oraz badanie popularności poszczególnych funkcji generatora.</p>
+        
+        <a href="index.html" class="back-btn">← Powrót do generatora</a>
+    </div>
 </body>
 </html>
