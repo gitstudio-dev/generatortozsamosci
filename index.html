@@ -137,7 +137,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         "1240": "Pekao SA", "1320": "Bank Pocztowy", "1540": "BOŚ Bank", "1610": "SGB-Bank", "1680": "Plus Bank",
         "1840": "Societe Generale", "1910": "Deutsche Bank", "1930": "BNP Paribas", "1940": "Credit Agricole Bank Polska",
         "1950": "Idea Bank", "2030": "BNP Paribas", "2120": "Santander Consumer Bank", "2490": "Alior Bank",
-        "2410": "ZEN.COM", "9182": "Bank Spółdzielczy", "2930": "VeloBank"
+        "2410": "ZEN.COM", "9182": "Bank Spółdzielczy", "2930": "VeloBank", "1880": "Deutsche Bank"
     };
 
     const ops = [
@@ -1010,27 +1010,33 @@ listaWojewodztw.trim().split('\n').forEach(linia => {
 });
     // --- WALIDATOR LOGIC ---
 
-    function autoValidate() {
-        let input = document.getElementById('val-input').value.replace(/\s/g, '').replace(/-/g, '').toUpperCase();
-        const res = document.getElementById('val-result');
-        
-        if (input.startsWith('PL')) input = input.substring(2);
-        if (input.length === 0) { res.innerHTML = "Wprowadź numer..."; return; }
+function autoValidate() {
+    let input = document.getElementById('val-input').value.trim();
+    const res = document.getElementById('val-result');
+    
+    // Usuwamy spacje do analizy długości
+    let cleanInput = input.replace(/\s/g, '').replace(/-/g, '').toUpperCase();
 
-        // Rozpoznawanie po długości
-        if (input.length === 11 && /^\d+$/.test(input)) {
-            res.innerHTML = validatePESEL(input);
-        } else if (input.length === 10 && /^\d+$/.test(input)) {
-            res.innerHTML = validateNIP(input);
-        } else if ((input.length === 9 || input.length === 14) && /^\d+$/.test(input)) {
-            res.innerHTML = validateREGON(input);
-        } else if (input.length === 26 && /^\d+$/.test(input)) {
-            res.innerHTML = validateIBAN(input);
-        } else {
-            res.innerHTML = "Nieobsługiwany format lub błędna długość.";
-        }
+    if (cleanInput.length === 0) { 
+        res.innerHTML = "Wprowadź numer..."; 
+        return; 
     }
 
+    // Rozpoznawanie po długości i formacie
+    if (cleanInput.length === 11 && /^\d+$/.test(cleanInput)) {
+        res.innerHTML = validatePESEL(cleanInput);
+    } else if (cleanInput.length === 10 && /^\d+$/.test(cleanInput)) {
+        res.innerHTML = validateNIP(cleanInput);
+    } else if ((cleanInput.length === 9 || cleanInput.length === 14) && /^\d+$/.test(cleanInput)) {
+        res.innerHTML = validateREGON(cleanInput);
+    } 
+    // NOWA LOGIKA DLA IBAN (26 cyfr lub 28 znaków z PL)
+    else if (cleanInput.length === 26 || (cleanInput.length === 28 && cleanInput.startsWith("PL"))) {
+        res.innerHTML = validateIBAN(cleanInput);
+    } else {
+        res.innerHTML = "Nieobsługiwany format lub błędna długość.";
+    }
+}
     function validatePESEL(p) {
         const w = [1, 3, 7, 9, 1, 3, 7, 9, 1, 3];
         let sum = 0;
@@ -1113,14 +1119,76 @@ function validateREGON(r) {
         📍 Województwo: <b>${wojewodztwo}</b>
     `;
 }
-    function validateIBAN(i) {
-        const check = bigMod97(i.substring(2) + "2521" + i.substring(0,2));
-        if (check !== 1n) return '<span class="status-invalid">NIEPOPRAWNY NUMER KONTA</span> (Błąd Modulo)';
-        const bCode = i.substring(2, 6);
-        const bName = bankMap[bCode] || "Nieznany Bank / Oddział Lokalny";
-        return `<span class="status-valid">POPRAWNY NUMER KONTA</span><br>🏦 Bank: <b>${bName}</b>`;
+function validateIBAN(iban) {
+    // 1. Oczyszczenie numeru
+    let clean = iban.toUpperCase().replace(/\s/g, '');
+    
+    // 2. Obsługa polskich numerów (dodanie PL jeśli wpisano same 26 cyfr)
+    if (clean.length === 26 && /^\d+$/.test(clean)) {
+        clean = "PL" + clean;
     }
 
+    // 3. Weryfikacja długości dla Polski (28 znaków z PL)
+    if (clean.length !== 28 || !clean.startsWith("PL")) {
+        return '<span class="status-invalid">BŁĄD:</span> Niepoprawna długość lub brak kodu kraju.';
+    }
+
+    // 4. Przygotowanie do algorytmu (Przeniesienie PL na koniec i zamiana na 2521)
+    // bban (24 cyfry) + 2521 (PL) + suma_kontrolna (2 cyfry z początku)
+    const bban = clean.substring(4);
+    const countryCode = "2521";
+    const checkDigits = clean.substring(2, 4);
+    const toCheck = bban + countryCode + checkDigits;
+
+    // 5. Obliczenie modulo 97 (BigInt jest niezbędny!)
+    try {
+        const isValid = BigInt(toCheck) % 97n === 1n;
+        
+        if (isValid) {
+            // Próba rozpoznania banku
+            const bankCode = clean.substring(4, 8);
+            const bankName = bankMap[bankCode] || "Nieznany bank";
+            return `<span class="status-valid">POPRAWNY IBAN</span><br>🏦 Bank: <b>${bankName}</b>`;
+        } else {
+            return '<span class="status-invalid">NIEPOPRAWNY IBAN</span> (Błędna suma kontrolna)';
+        }
+    } catch (e) {
+        return '<span class="status-invalid">BŁĄD:</span> Numer zawiera niedozwolone znaki.';
+    }
+}
+function generateFinalCorrectIBAN() {
+// 1. LOSOWANIE BANKU
+    const keys = Object.keys(bankMap);
+    const selectedKey = keys[Math.floor(Math.random() * keys.length)];
+    
+    // 2. BLOK BANKU (8 CYFR) - Tu dzieje się "magia" z zerami
+    // Jeśli kod ma 4 cyfry, dopisujemy "0000". Jeśli 8, zostaje jak jest.
+    let bankBlock = selectedKey.length === 8 ? selectedKey : selectedKey + "0000";
+
+    // 3. LOSOWANIE NUMERU KONTA (16 CYFR)
+    // To są te losowe cyfry, o które prosiłeś, występujące PO kodzie banku.
+    let accountPart = "";
+    for (let i = 0; i < 16; i++) {
+        accountPart += Math.floor(Math.random() * 10).toString();
+    }
+
+    // 4. BBAN (Basic Bank Account Number) - Łącznie 24 cyfry
+    const bban = bankBlock + accountPart;
+
+    // 5. CYFRY KONTROLNE (Algorytm Modulo 97)
+    // Obliczamy cyfry kontrolne tak, aby numer był matematycznie poprawny (IBAN)
+    const checkSumInput = bban + "252100"; // 2521 to litery PL
+    const mod = BigInt(checkSumInput) % 97n;
+    const checkDigits = (98n - mod).toString().padStart(2, '0');
+
+    // WYNIK KOŃCOWY: PL + 2 cyfry kontrolne + 24 cyfry (Bank + Konto)
+    const fullIban = "PL" + checkDigits + bban;
+
+    return {
+        iban: fullIban,
+        bank: bankMap[selectedKey]
+    };
+}
     // --- FUNKCJE GENERATORA (PODSTAWOWE) ---
 function genPlate() {
     const keys = Object.keys(BAZA_TABLIC);
