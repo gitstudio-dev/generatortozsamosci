@@ -2,20 +2,136 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Regulamin - Generator Tożsamości</title>
     <style>
-        :root { --primary: #10b981; --secondary: #3b82f6; --bg: #0f172a; --card: #1e293b; --text: #f8fafc; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); padding: 40px 20px; line-height: 1.6; display: flex; justify-content: center; }
-        .container { background: var(--card); padding: 40px; border-radius: 24px; max-width: 850px; border: 1px solid #334155; }
-        h1 { color: var(--primary); border-bottom: 1px solid #334155; padding-bottom: 10px; font-size: 2rem; }
-        h2 { color: var(--secondary); margin-top: 25px; font-size: 1.2rem; }
-        .warn { border: 1px solid #fbbf24; padding: 15px; border-radius: 12px; color: #fbbf24; margin: 20px 0; font-size: 0.9rem; }
-        li { color: #94a3b8; margin-bottom: 12px; }
-        .back-btn { display: inline-block; margin-top: 30px; padding: 12px 24px; background: var(--secondary); color: white; text-decoration: none; border-radius: 12px; font-weight: bold; }
+        :root { 
+            --primary-color: #4ecca3; 
+            --accent-color: #45b293;
+            --text-main: #ffffff;
+            --text-muted: #e2e8f0;
+            --warn-color: #fbbf24; /* Kolor ostrzeżenia */
+        }
+
+        /* Główne tło z efektem radial-gradient */
+        body {
+            background: radial-gradient(circle at center, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            background-size: cover;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-main);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        /* Kontener dokumentu - Efekt pływającej ramki (Glassmorphism) */
+        .container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 50px;
+            max-width: 850px;
+            margin: 50px 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            line-height: 1.7;
+        }
+
+        /* Stylizacja przycisku powrotu */
+        .back-link {
+            display: inline-block;
+            text-decoration: none;
+            color: #1a1a2e;            /* Ciemny tekst na zielonym tle */
+            background: var(--primary-color);
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(78, 204, 163, 0.2);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .back-link:hover {
+            transform: scale(1.05);
+            background: var(--accent-color);
+            box-shadow: 0 6px 20px rgba(78, 204, 163, 0.4);
+        }
+
+        .back-link:active {
+            transform: scale(0.95);
+        }
+
+        /* Nagłówki */
+        h1, h2 {
+            color: var(--primary-color);
+            border-bottom: 1px solid rgba(78, 204, 163, 0.2);
+            padding-bottom: 10px;
+            margin-top: 30px;
+        }
+
+        h1 { margin-top: 0; }
+
+        p, li {
+            color: var(--text-muted);
+            margin-bottom: 15px;
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+
+        strong {
+            color: var(--primary-color);
+        }
+
+        /* Specjalny styl dla ostrzeżenia */
+        .warn {
+            border: 1px solid var(--warn-color);
+            padding: 20px;
+            border-radius: 12px;
+            color: var(--warn-color);
+            margin: 25px 0;
+            background: rgba(251, 191, 36, 0.05); /* Bardzo delikatne tło ostrzeżenia */
+            font-size: 0.95rem;
+        }
+        
+        .warn strong {
+            color: var(--warn-color);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Stopka dokumentu */
+        .doc-footer {
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.85rem;
+            color: #94a3b8;
+            text-align: center;
+        }
+
+        /* Responsywność */
+        @media (max-width: 600px) {
+            .container {
+                padding: 30px 20px;
+                margin: 20px 10px;
+            }
+        }
     </style>
 </head>
 <body>
+
     <div class="container">
+        <a href="index.html" class="back-link">← Powrót do generatora</a>
+
         <h1>Regulamin Serwisu</h1>
         <p>Korzystanie z serwisu jest równoznaczne z akceptacją poniższych warunków.</p>
 
@@ -42,7 +158,10 @@
         <h2>4. Zmiany w regulaminie</h2>
         <p>Zastrzegamy sobie prawo do zmiany regulaminu w dowolnym momencie. Zmiany wchodzą w życie z chwilą ich opublikowania na tej podstronie.</p>
 
-        <a href="index.html" class="back-btn">← Powrót do generatora</a>
+        <div class="doc-footer">
+            © 2024 Generator Tożsamości. Wszystkie prawa zastrzeżone.
+        </div>
     </div>
+
 </body>
 </html>
