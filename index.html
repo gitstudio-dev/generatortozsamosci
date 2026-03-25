@@ -304,6 +304,12 @@ h3 {
         gap: 10px;
     }
 }
+.val {
+    font-size: 1.1rem;
+    font-family: monospace;
+    color: var(--primary-color);
+    word-break: break-all; /* To zapobiega rozjeżdżaniu się ramek przez długie IPv6 */
+}
     </style>
 </head>
 <body>
@@ -350,8 +356,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <div class="item full" onclick="copy(this)"><span class="label">IBAN (PL) - <span id="bank-name" class="tag">...</span></span><span id="g-iban" class="val">---</span><span class="copy-hint">KOPIUJ</span></div>
             <div class="item full" onclick="copy(this)"><span class="label">Mikrorachunek (Osoba - PESEL)</span><span id="g-tax-p" class="val">---</span><span class="copy-hint">KOPIUJ</span></div>
             <div class="item full" onclick="copy(this)"><span class="label">Mikrorachunek (Firma - NIP)</span><span id="g-tax-n" class="val">---</span><span class="copy-hint">KOPIUJ</span></div>
+<div class="item" onclick="copy(this)"><span class="label">Adres IPv4</span><span id="g-ipv4" class="val">---</span></div>
+<div class="item" onclick="copy(this)"><span class="label">Adres IPv6</span><span id="g-ipv6" class="val">---</span></div>
+<div class="item" onclick="copy(this)"><span class="label">Brama sieciowa</span><span id="g-gateway" class="val">---</span></div>
+<div class="item" onclick="copy(this)"><span class="label">DNS</span><span id="g-dns" class="val">---</span></div>
+<div class="item" onclick="copy(this)"><span class="label">Adres MAC</span><span id="g-mac" class="val">---</span></div>
         </div>
-        
         <button class="main-btn" onclick="generateAll()">GENERUJ KOMPLET DANYCH</button>
 
         <h3>Walidator danych</h3>
@@ -438,8 +448,19 @@ const passport = genPassport();
 // Generowanie NPWZ
     const npwz = genNPWZ();
     document.getElementById('g-npwz').innerText = npwz;
-
-document.getElementById('g-plate').innerText = genPlate();
+// Sekcja sieciowa - Aktywacja
+    const ipv4 = genIPv4();
+    document.getElementById('g-ipv4').innerText = ipv4;
+    document.getElementById('g-ipv6').innerText = genIPv6();
+    document.getElementById('g-mac').innerText = genMAC();
+    
+    // Generowanie bramy na podstawie adresu IP
+    const gateway = ipv4.split('.').slice(0, 3).join('.') + '.1';
+    document.getElementById('g-gateway').innerText = gateway;
+    
+    // Losowy DNS
+    const dnsList = ["8.8.8.8", "1.1.1.1", "9.9.9.9", "208.67.222.222"];
+    document.getElementById('g-dns').innerText = dnsList[Math.floor(Math.random() * dnsList.length)];document.getElementById('g-plate').innerText = genPlate();
         document.getElementById('g-vin').innerText = genVIN();
         document.getElementById('g-license').innerText = genLicense();
         document.getElementById('g-car-id').innerText = genCarID();
@@ -1585,6 +1606,24 @@ function genNPWZ() {
     
     // Wynik to cyfra kontrolna + 6 cyfr losowych
     return control.toString() + d.join('');
+}
+function genIPv4() {
+    return Array.from({length: 4}, () => Math.floor(Math.random() * 256)).join('.');
+}
+
+function genIPv6() {
+    const part = () => Math.floor(Math.random() * 65536).toString(16).padStart(4, '0');
+    return Array.from({length: 8}, part).join(':');
+}
+
+function genMAC() {
+    const part = () => Math.floor(Math.random() * 256).toString(16).toUpperCase().padStart(2, '0');
+    return Array.from({length: 6}, part).join(':');
+}
+
+function genDNS() {
+    const dnsList = ["8.8.8.8", "8.8.4.4", "1.1.1.1", "1.0.0.1", "9.9.9.9", "208.67.222.222"];
+    return dnsList[Math.floor(Math.random() * dnsList.length)];
 }
     function copy(el) {
         const val = el.querySelector('.val').innerText.replace(/\s/g, '');
